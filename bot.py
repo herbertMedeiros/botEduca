@@ -7,34 +7,50 @@ import subprocess as s
 
 bot = ChatBot('Test')
 
-convI = ['oi','olá','olá','bom dia', 'bom dia','boa noite','boa noite','como vai?','tudo bem?','Eu estou bem','Qual é o seu nome?','Meu nome é Pascalzim']
+convI = ['oi','olá, qual é o seu nome?','bom dia', 'bom dia','boa noite','boa noite','tudo bem?','Eu estou bem, e você?','Qual é o seu nome?','Meu nome é Pascalzim']
 
-convMatematica = ['tenho dúvidas em matemática','qual sua dúvida?','Gostaria de sua ajuda','claro, é só dizer qual seu problema *-*',
-'vamos mudar de assunto', 'você gosta de matemática?', 'eu amo matemática, com ela conseguimos fazer cosas fantásticas', 'muito obrigado',
-'você é muito bom com extas','nossa, que legal']
+convMatematica = ['Tenho dúvidas em matemática','Qual é a sua dúvida?','Gostaria de sua ajuda','claro, é só dizer qual seu problema',
+'vamos mudar de assunto', 'você gosta de matemática?', 'eu amo matemática, com ela conseguimos fazer cosas fantásticas','Você é muito bom com extas','nossa, que legal!']
 
 
 bot.set_trainer(ListTrainer)
-
 bot.train(convI)
 bot.train(convMatematica)
 
+def soma_Simples(pergunta):
+	soma = 0
+	for x in pergunta:
+		if x.isdigit():
+			soma = soma+int(x)
+	print('Pascalzim:',soma)
  
+
 while True:
+	
 	pergunta = input('Você: ')
 	resposta = bot.get_response(pergunta)
-	
-	#Executar um comando linux
-	if ('execute' in pergunta):
-		comando = pergunta.replace('execute ','')
-		s.Popen(comando)
-		print('ok')
 	#despedida
-	if (pergunta.upper() == 'TCHAU'):
+	if ('TCHAU' in pergunta.upper()):
 		print('Pascalzinho: Tchau mestre, nos vemos em breve')
 		break
+
+
+	#Executar um comando linux
+	if ('EXECUTE' in pergunta.upper()):
+		comando = pergunta.replace('execute ','')
+		try:
+			s.Popen(comando)
+			print('ok')
+		except FileNotFoundError:
+			print('Comando não encontrado, tendizer "execute ***"')
 	#respostas
-	if float(resposta.confidence)>0.3:
+
+	elif ('some' in pergunta) or ('+' in pergunta):
+		soma_Simples(pergunta)
+
+	#incremento
+	elif float(resposta.confidence)>0.45:
 		print('Pascalzinho:', resposta)
 	else:
-		print('Pascalzim: Não entendo muito sobre isso ainda, me desculpe.')
+		print('Pascalzim: Não entendo, por enquanto, mas você pode me ensinar :D')
+	
