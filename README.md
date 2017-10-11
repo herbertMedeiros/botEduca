@@ -1,1 +1,1 @@
-Ferramenta voltada para educação infantil.
+Bot implemented for education
